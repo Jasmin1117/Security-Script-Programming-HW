@@ -108,8 +108,7 @@ name_entry.grid(row=0, column=1, padx=10, pady=5)
 
 tk.Label(root, text="Email:", font=font_style).grid(row=1, column=0, padx=10, pady=5)
 email_entry = tk.Entry(root, font=font_style, width=30)
-email_entry.grid(row=1, column=1, 
-padx=10, pady=5)
+email_entry.grid(row=1, column=1, padx=10, pady=5)
 
 tk.Label(root, text="Age:", font=font_style).grid(row=2, column=0, padx=10, pady=5)
 age_entry = tk.Entry(root, font=font_style, width=30)

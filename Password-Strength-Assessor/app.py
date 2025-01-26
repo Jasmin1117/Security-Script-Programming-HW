@@ -54,12 +54,12 @@ root.grid_columnconfigure(1, weight=1)
 root.grid_columnconfigure(2, weight=1)
 
 # Entry widget for password input
-tk.Label(root, text="Enter a Password", font=font_style).grid(row=0, column=1, pady=10)  # Centering in column 1
+tk.Label(root, text="Enter a Password", font=font_style).grid(row=0, column=1, pady=10)  
 entry = tk.Entry(root, show="*")
 entry.grid(row=1, column=1, padx=10, pady=5)
 
 # Button to check the password
-check_button = tk.Button(root, text="Check Password", command=lambda: print("Check Password"))
+check_button = tk.Button(root, text="Check Password", command=check_password)
 check_button.grid(row=2, column=1, pady=10)
 
 # Run the application
