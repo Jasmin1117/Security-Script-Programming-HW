@@ -41,8 +41,9 @@ def validate_age(age):
 
 # removes HTML and script tags
 def sanitize_message(message):
-    sanitized_message = html.escape(message)  
+    sanitized_message = re.sub(r'<.*?>', '', message)
     return sanitized_message
+
 
 # saves file
 def save_to_file(data):
@@ -51,10 +52,13 @@ def save_to_file(data):
 
 # submits correct data
 def submit_form():
-    name = name_entry.get()
+    first_name = first_name_entry.get()
+    last_name = last_name_entry.get()
     email = email_entry.get()
     age = age_entry.get()
     message = message_entry.get()
+
+    name = first_name + " " + last_name
 
 
     error_message = validate_required_fields(name, email)
@@ -89,41 +93,43 @@ def submit_form():
     save_to_file(form_data)
     messagebox.showinfo("Form Submitted", "Thank you! Your form has been successfully submitted.")
     
-    name_entry.delete(0, tk.END)
+    first_name_entry.delete(0, tk.END)
+    last_name_entry.delete(0, tk.END)
     email_entry.delete(0, tk.END)
     age_entry.delete(0, tk.END)
     message_entry.delete(0, tk.END)
 
 
-# Create the Tkinter window
 root = tk.Tk()
 root.title("Faretail Form Submission")
 
 font_style = ("Arial", 16)
 
 # Form Labels and Entry Fields
-tk.Label(root, text="Name:", font=font_style).grid(row=0, column=0, padx=10, pady=5)
-name_entry = tk.Entry(root, font=font_style, width=30)
-name_entry.grid(row=0, column=1, padx=10, pady=5)
+tk.Label(root, text="Name:", font=font_style).grid(row=0, column=0, padx=10, pady=5, sticky="e")
+first_name_entry = tk.Entry(root, font=font_style, width=14)
+first_name_entry.grid(row=0, column=1, padx=10, pady=5)
 
-tk.Label(root, text="Email:", font=font_style).grid(row=1, column=0, padx=10, pady=5)
+last_name_entry = tk.Entry(root, font=font_style, width=14)
+last_name_entry.grid(row=0, column=2, padx=10, pady=5)
+
+tk.Label(root, text="Email:", font=font_style).grid(row=1, column=0, padx=10, pady=5, sticky="e")
 email_entry = tk.Entry(root, font=font_style, width=30)
-email_entry.grid(row=1, column=1, padx=10, pady=5)
+email_entry.grid(row=1, column=1, padx=10, pady=5, columnspan=2)
 
-tk.Label(root, text="Age:", font=font_style).grid(row=2, column=0, padx=10, pady=5)
+tk.Label(root, text="Age:", font=font_style).grid(row=2, column=0, padx=10, pady=5, sticky="e")
 age_entry = tk.Entry(root, font=font_style, width=30)
-age_entry.grid(row=2, column=1, padx=10, pady=5)
+age_entry.grid(row=2, column=1, padx=10, pady=5, columnspan=2)
 
-tk.Label(root, text="Message:", font=font_style).grid(row=3, column=0, padx=10, pady=5)
+tk.Label(root, text="Message:", font=font_style).grid(row=3, column=0, padx=10, pady=5, sticky="e")
 message_entry = tk.Entry(root, font=font_style, width=30)
-message_entry.grid(row=3, column=1, padx=10, pady=5)
+message_entry.grid(row=3, column=1, padx=10, pady=5, columnspan=2)
 
 # Submit Button
-submit_button = tk.Button(root, text="Submit", font=font_style, command=submit_form, width=15, height=1)
-submit_button.grid(row=4, columnspan=2, pady=10)
+submit_button = tk.Button(root, text="Submit", font=("Arial", 13), command=lambda: print("Form Submitted"), width=15, height=1)
+submit_button.grid(row=4, columnspan=3, pady=10)
 
 root.mainloop()
-
 
 
 

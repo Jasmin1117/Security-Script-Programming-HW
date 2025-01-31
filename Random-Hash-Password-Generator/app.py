@@ -76,16 +76,18 @@ def toggle_password_visibility():
 root = tk.Tk()
 root.title("Random Password Generator")
 
-label = tk.Label(root, text="Click the button to generate a random password.", font=("Arial", 14))
+font_style = ("Arial", 12)
+
+label = tk.Label(root, text="Click the button to generate a random password.",  font=("Arial", 16))
 label.pack(pady=10)
 
 entry_field = tk.Entry(root, width=30, show="*")
 entry_field.pack(pady=5)
 
-show_button = tk.Button(root, text="Show", command=toggle_password_visibility, font=("Arial", 14))
+show_button = tk.Button(root, text="Show", command=toggle_password_visibility, font=font_style)
 show_button.pack(pady=5)
 
-generate_button = tk.Button(root, text="Generate Random Password", command=hash_and_save_password, font=("Arial", 14))
+generate_button = tk.Button(root, text="Generate Random Password", command=hash_and_save_password, font=font_style)
 generate_button.pack(pady=20)
 
 root.mainloop()
