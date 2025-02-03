@@ -17,7 +17,7 @@ def generate_random_password():
     password = [
         random.choice(uppercase),
         random.choice(lowercase),
-        random.choice(lowercase),
+        random.choice(digits),
         random.choice(special_chars)
     ]
 
@@ -43,7 +43,7 @@ def save_to_file(hashed_password, salt):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     try:
-        with open("password.txt","a") as file:
+        with open("passwords.txt","a") as file:
             file.write(f"Timestamp:{timestamp} Salt:{salt.hex()} Hashed: {hashed_password}\n")
         messagebox.showinfo("Password Saved", "The password has been saved to 'password.txt")
     except Exception as e:

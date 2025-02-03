@@ -60,7 +60,6 @@ def submit_form():
 
     name = first_name + " " + last_name
 
-
     error_message = validate_required_fields(name, email)
     if error_message:
         messagebox.showerror("Validation Error", error_message)
