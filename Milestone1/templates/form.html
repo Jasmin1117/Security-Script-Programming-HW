@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .signup-form {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="signup-form">
+            <h2 class="text-center mb-4">Sign Up</h2>
+            <form action="/submit" method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name"  value="{{ name }}">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ email }}">
+                </div>
+                <div class="mb-3">
+                    <label for="birthday" class="form-label">Birthday (MM-DD-YYYY):</label>
+                    <input type="text" class="form-control" id="birthday" name="birthday"  value="{{ birthday }}">
+                </div>
+                <div class="mb-3">
+                    <label for="age" class="form-label">Age:</label>
+                    <input type="number" class="form-control" id="age" name="age"  value="{{ age }}">
+                </div>
+            
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" oninput="checkPasswordStrength()">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="showPassword">
+                        <label class="form-check-label" for="showPassword">Show Password</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="repassword" class="form-label">Confirm Password:</label>
+                    <input type="password" class="form-control" id="repassword" name="repassword">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="showRePassword">
+                        <label class="form-check-label" for="showRePassword">Show Password</label>
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary mb-3" type="button" id="generatePasswordButton">Generate Password</button>
+
+                <div id="password-requirements" class="mt-2">
+                    <p id="length" class="text-danger">Must be at least 12 characters long.</p>
+                    <p id="lowercase" class="text-danger">Must have a lowercase letter.</p>
+                    <p id="uppercase" class="text-danger">Must have an uppercase letter.</p>
+                    <p id="number" class="text-danger">Must have a number.</p>
+                    <p id="special-char" class="text-danger">Must have a special character.</p>
+                </div>
+
+                <div class="mb-3">
+                    <label for="bio" class="form-label">Bio:</label>
+                    <textarea class="form-control" id="bio" name="bio" value="{{ bio }}"></textarea>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Error Start-->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalErrorMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Error End-->
+
+
+    <!-- Modal for Success Start-->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalSuccessMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Sucecss End-->
+
+
+    <!-- Functions for Error and Success Start-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showErrorModal(errorMessage) {
+            document.getElementById('modalErrorMessage').textContent = errorMessage;
+            var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        }
+
+        function showSuccessModal(successMessage) {
+            document.getElementById('modalSuccessMessage').textContent = successMessage;
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        }
+
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showErrorModal(data.error);
+                    // Repopulate form fields
+                    document.getElementById('name').value = data.name || '';
+                    document.getElementById('email').value = data.email || '';
+                    document.getElementById('birthday').value = data.birthday || '';
+                    document.getElementById('age').value = data.age || '';
+                    document.getElementById('bio').value = data.bio || '';
+                } else if (data.success) {
+                    showSuccessModal(data.message);
+                    document.querySelector('form').reset();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showErrorModal('An unexpected error occurred.');
+            });
+        });
+    </script>
+    <!-- Functions for Error and Success End-->
+
+    <script>
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const specialChar = document.getElementById('special-char');
+            const uppercase = document.getElementById('uppercase');
+            const lowercase = document.getElementById('lowercase');
+            const number = document.getElementById('number');
+            const length = document.getElementById('length');
+
+            const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]+/;
+            const uppercaseRegex = /[A-Z]+/;
+            const lowercaseRegex = /[a-z]+/;
+            const numberRegex = /[0-9]+/;
+
+            // for Length check
+            if (password.length >= 12) {
+                length.classList.remove('text-danger');
+                length.classList.add('text-success');
+            } else {
+                length.classList.remove('text-success');
+                length.classList.add('text-danger');
+            }
+
+            // for Uppercase check
+            if (uppercaseRegex.test(password)) {
+                uppercase.classList.remove('text-danger');
+                uppercase.classList.add('text-success');
+            } else {
+                uppercase.classList.remove('text-success');
+                uppercase.classList.add('text-danger');
+            }
+
+            // for Lowercase check
+            if (lowercaseRegex.test(password)) {
+                lowercase.classList.remove('text-danger');
+                lowercase.classList.add('text-success');
+            } else {
+                lowercase.classList.remove('text-success');
+                lowercase.classList.add('text-danger');
+            }
+
+            // for Special character check
+            if (specialCharRegex.test(password)) {
+                specialChar.classList.remove('text-danger');
+                specialChar.classList.add('text-success');
+            } else {
+                specialChar.classList.remove('text-success');
+                specialChar.classList.add('text-danger');
+            }
+
+            // for Number check
+            if (numberRegex.test(password)) {
+                number.classList.remove('text-danger');
+                number.classList.add('text-success');
+            } else {
+                number.classList.remove('text-success');
+                number.classList.add('text-danger');
+            }
+        }
+
+        document.getElementById('generatePasswordButton').addEventListener('click', function() {
+            fetch('/generate_password')
+                .then(response => response.json())
+                .then(data => {
+                    const password = data.password;
+                    document.getElementById('password').value = password;
+                    document.getElementById('repassword').value = password;
+
+                    // check password strength again
+                    checkPasswordStrength();
+                });
+        });
+
+        // first password checkbox to show or hide
+        document.getElementById('showPassword').addEventListener('change', function() {
+            document.getElementById('password').type = this.checked ? "text" : "password";
+        });
+
+        // second password checkbox to show or hide
+        document.getElementById('showRePassword').addEventListener('change', function() {
+            document.getElementById('repassword').type = this.checked ? "text" : "password";
+        });
+    </script>
+</body>
+</html>
