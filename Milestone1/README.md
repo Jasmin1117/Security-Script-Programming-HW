@@ -23,7 +23,7 @@ https://www.loom.com/share/1ad8d7bd273c4420a0760f027729dfbf?sid=0edce3f3-d036-4a
 **Birthday & Age**
 
 * Birthday field cannot be empty.
-* Must be in the correct format (YYYY-MM-DD).
+* Must be in the correct format (MM-DD-YYYY).
 * Age is calculated based on the birthday and must be between 18 - 120 years old.
 
 **Password**
