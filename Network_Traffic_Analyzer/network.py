@@ -86,8 +86,45 @@ def process_packet(packet):
         # Apply filtering logic
         if selected_protocol != "All" and selected_protocol != proto:
             return  # Skip if the protocol doesn't match
-        if selected_port and port_info and selected_port not in port_info:
-            return  # Skip if the port doesn't match
+        
+        if selected_port:
+            selected_ports = []
+            
+            # Handle port range (e.g., "20-80")
+            if "-" in selected_port:
+                try:
+                    start, end = map(int, selected_port.split("-"))
+                    selected_ports = list(range(start, end + 1))
+                except ValueError:
+                    messagebox.showerror("Error", "Invalid port range format. Use: start-end (e.g., 20-80).")
+                    return
+            
+            # Handle multiple ports (e.g., "22,80,443")
+            elif "," in selected_port:
+                try:
+                    selected_ports = [int(p.strip()) for p in selected_port.split(",")]
+                except ValueError:
+                    messagebox.showerror("Error", "Invalid port list format. Use: 22,80,443")
+                    return
+            
+            # Handle single port
+            else:
+                try:
+                    selected_ports = [int(selected_port)]
+                except ValueError:
+                    messagebox.showerror("Error", "Invalid port number.")
+                    return
+            
+            # Extract ports from the packet
+            packet_ports = []
+            if TCP in packet:
+                packet_ports = [packet[TCP].sport, packet[TCP].dport]
+            elif UDP in packet:
+                packet_ports = [packet[UDP].sport, packet[UDP].dport]
+
+            # Check if any port in the packet matches the user input
+            if not any(port in selected_ports for port in packet_ports):
+                return  # Skip if no matching port is found
 
         # Format and display packet details
         packet_info = f"Protocol: {proto}, Source IP: {src_ip}, Destination IP: {dst_ip}, {port_info}\n"
